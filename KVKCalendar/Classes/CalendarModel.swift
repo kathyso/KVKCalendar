@@ -257,6 +257,8 @@ public protocol CalendarDataSource: class {
 }
 
 public extension CalendarDataSource {
+    func eventsForCalendar(systemEvents: [EKEvent]) -> [Event] { return [] }
+    
     func willDisplayDate(_ date: Date?, events: [Event]) {}
     
     func willDisplayEventView(_ event: Event, frame: CGRect, date: Date?) -> EventViewGeneral? { return nil }
