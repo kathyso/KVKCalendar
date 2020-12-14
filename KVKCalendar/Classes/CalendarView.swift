@@ -271,7 +271,7 @@ extension CalendarView: CalendarSettingProtocol {
     }
     
     // TODO: in progress
-    func updateStyle(_ style: Style) {
+    public func updateStyle(_ style: Style) {
         self.style = style
         dayView.updateStyle(style)
         weekView.updateStyle(style)
