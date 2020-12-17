@@ -15,12 +15,7 @@ final class DayView: UIView {
     weak var dataSource: DisplayDataSource?
     
     lazy var scrollHeaderDay: ScrollDayHeaderView = {
-        let heightView: CGFloat
-        if style.headerScroll.isHiddenSubview {
-            heightView = style.headerScroll.heightHeaderWeek
-        } else {
-            heightView = style.headerScroll.heightHeaderWeek + style.headerScroll.heightSubviewHeader
-        }
+        let heightView: CGFloat = getHeaderScrollHeight()
         let view = ScrollDayHeaderView(frame: CGRect(x: 0, y: 0, width: frame.width, height: heightView),
                                        days: data.days,
                                        date: data.date,
@@ -63,12 +58,7 @@ final class DayView: UIView {
     }()
     
     private lazy var topBackgroundView: UIView = {
-        let heightView: CGFloat
-        if style.headerScroll.isHiddenSubview {
-            heightView = style.headerScroll.heightHeaderWeek
-        } else {
-            heightView = style.headerScroll.heightHeaderWeek + style.headerScroll.heightSubviewHeader
-        }
+        let heightView: CGFloat = getHeaderScrollHeight()
         let view = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: heightView))
         if let blur = style.headerScroll.backgroundBlurStyle {
             view.setBlur(style: blur)
@@ -87,6 +77,16 @@ final class DayView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func getHeaderScrollHeight() -> CGFloat {
+        let heightView: CGFloat
+        if style.headerScroll.isHiddenSubview {
+            heightView = style.headerScroll.heightHeaderWeek
+        } else {
+            heightView = style.headerScroll.heightHeaderWeek + style.headerScroll.heightSubviewHeader
+        }
+        return heightView
     }
     
     func addEventView(view: UIView) {
@@ -262,9 +262,17 @@ extension DayView: CalendarSettingProtocol {
         subviews.forEach({ $0.removeFromSuperview() })
         
         if !style.headerScroll.isHidden {
+            updateViewHeight()
             addSubview(topBackgroundView)
             topBackgroundView.addSubview(scrollHeaderDay)
         }
         addSubview(timelineView)
+    }
+    
+    func updateViewHeight() {
+        scrollHeaderDay.frame.size.height = getHeaderScrollHeight()
+        timelineView.frame.origin.y = scrollHeaderDay.frame.height
+        timelineView.frame.size.height -= scrollHeaderDay.frame.height
+        topBackgroundView.frame.size.height = getHeaderScrollHeight()
     }
 }
